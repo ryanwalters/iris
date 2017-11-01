@@ -13,6 +13,9 @@
 
 service: iris
 
+package:
+  artifact: dist/iris.zip
+
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
 # frameworkVersion: "=X.X.X"
@@ -20,6 +23,7 @@ service: iris
 provider:
   name: aws
   runtime: nodejs6.10
+  memorySize: 1536
 
 # you can overwrite defaults here
 #  stage: dev
@@ -55,8 +59,10 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-  hello:
-    handler: handler.hello
+  resizeImage:
+    handler: handler.resizeImage
+    events:
+      - http: GET resizeImage
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
