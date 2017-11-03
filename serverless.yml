@@ -13,9 +13,6 @@
 
 service: iris
 
-package:
-  artifact: dist/iris.zip
-
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
 # frameworkVersion: "=X.X.X"
@@ -24,6 +21,15 @@ provider:
   name: aws
   runtime: nodejs6.10
   memorySize: 1536
+  environment:
+    API_GATEWAY: { "Fn::Join": ["", [{ "Ref": "ApiGatewayRestApi" }, ".execute-api.${self:provider.region}.amazonaws.com"]]}
+    #WEBSITE_URL: { "Fn::GetAtt": ["MediaServer", "WebsiteURL"] }
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "s3:*"
+      #Resource: { "Fn::Join": ["", ["arn:aws:s3:::", { "Ref": "MediaServer" }]]}
+      Resource: "*"
 
 # you can overwrite defaults here
 #  stage: dev
@@ -49,20 +55,21 @@ provider:
 #  environment:
 #    variable1: value1
 
-# you can add packaging information here
-#package:
-#  include:
-#    - include-me.js
-#    - include-me-dir/**
-#  exclude:
-#    - exclude-me.js
-#    - exclude-me-dir/**
+package:
+  artifact: dist/iris.zip
+
+custom:
+  fnName: resizeImage
 
 functions:
   resizeImage:
     handler: handler.resizeImage
+    environment:
+      BUCKET: { "Ref": "MediaServer" }
+      URL: { "Fn::GetAtt": ["MediaServer", "WebsiteURL"] }
+      #CDN_URL: { "Fn::GetAtt": ["MediaCDN", "DomainName"] }
     events:
-      - http: GET resizeImage
+      - http: GET ${self:custom.fnName}
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
@@ -95,6 +102,43 @@ functions:
 #    Define function environment variables here
 #    environment:
 #      variable2: value2
+
+resources:
+  Resources:
+    MediaServer:
+      Type: AWS::S3::Bucket
+      DeletionPolicy: Retain
+      Properties:
+        AccessControl: PublicRead
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          RoutingRules:
+            - RedirectRule:
+                HttpRedirectCode: 307
+                Protocol: https
+                HostName: ${self:provider.environment.API_GATEWAY}
+                ReplaceKeyPrefixWith: ${self:provider.stage}/${self:custom.fnName}?key=
+              RoutingRuleCondition:
+                HttpErrorCodeReturnedEquals: 404
+#    MediaCDN:
+#      Type: AWS::CloudFront::Distribution
+#      Properties:
+#        DistributionConfig:
+#          DefaultCacheBehavior:
+#            Origins:
+#              - DomainName: { "Fn::GetAtt": ["MediaServer", "WebsiteURL"] } # ${self:provider.environment.WEBSITE_URL}
+#                Id: MediaServerS3Origin
+#            Enabled: 'true'
+#            AllowedMethods:
+#              - GET
+#            CachedMethods:
+#              - GET
+#            Compress: 'true'
+#            DefaultTTL: 0
+#            ForwardedValues:
+#              QueryString: 'false'
+            #ViewerProtocolPolicy: redirect-to-https
+
 
 # you can add CloudFormation resource templates here
 #resources:
