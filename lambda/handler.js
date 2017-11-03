@@ -7,8 +7,7 @@ const S3 = new AWS.S3({ signatureVersion: 'v4' });
 
 module.exports.resizeImage = (event, context, callback) => {
   const BUCKET = process.env.BUCKET;
-  const URL = process.env.URL;
-  const CDN_URL = process.env.CDN_URL;
+  const CLOUDFRONT_URL = process.env.CLOUDFRONT_URL;
 
   const key = event.queryStringParameters.key;
   const match = key.match(/(\d+)x(\d+)\/(.*)/);
@@ -47,7 +46,7 @@ module.exports.resizeImage = (event, context, callback) => {
       return callback(null, {
         statusCode: '301',
         headers: {
-          Location: `${URL}/${key}`,
+          Location: `${CLOUDFRONT_URL}/${key}`,
         },
         body: '',
       });
