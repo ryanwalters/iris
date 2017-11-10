@@ -3,11 +3,21 @@
 const AWS = require('aws-sdk');
 const sharp = require('sharp');
 const S3 = new AWS.S3({ signatureVersion: 'v4' });
+const BUCKET = process.env.BUCKET;
+const CLOUDFRONT_URL = process.env.CLOUDFRONT_URL;
 
 const AmazonError = {
   NO_SUCH_KEY: 'NoSuchKey',
 };
 
+const notFoundResponse = {
+  statusCode: '302',
+  headers: {
+    'Cache-Control': 'max-age=604800',
+    'Location': `${CLOUDFRONT_URL}/notfound.html`,
+  },
+  body: '',
+};
 
 
 /**
@@ -32,8 +42,7 @@ function isValidCommand(command) {
  */
 
 module.exports.resizeImage = (event, context, callback) => {
-  const BUCKET = process.env.BUCKET;
-  const CLOUDFRONT_URL = process.env.CLOUDFRONT_URL;
+  console.log(JSON.stringify(event));
 
   const key = event.queryStringParameters.key;
   const rectangle = key.match(/(\d+)x(\d+)\/(.*)/);
@@ -68,7 +77,9 @@ module.exports.resizeImage = (event, context, callback) => {
     // Make sure command is valid...
 
     if (!isValidCommand(command)) {
-      return callback('Invalid command:', command);
+      console.log('Invalid command:', command);
+
+      return callback(null, notFoundResponse);
     }
   }
 
@@ -94,7 +105,9 @@ module.exports.resizeImage = (event, context, callback) => {
     // Make sure command is valid...
 
     if (!isValidCommand(command)) {
-      return callback('Invalid command:', command);
+      console.log('Invalid command:', command);
+
+      return callback(null, notFoundResponse);
     }
   }
 
@@ -102,7 +115,9 @@ module.exports.resizeImage = (event, context, callback) => {
   // No match...
 
   else {
-    return callback('Invalid key:', key);
+    console.log('Invalid key:', key);
+
+    return callback(null, notFoundResponse);
   }
 
 
@@ -162,14 +177,7 @@ module.exports.resizeImage = (event, context, callback) => {
         // Redirect to the generic "Not Found" page if the original image doesn't exist in S3
 
         case AmazonError.NO_SUCH_KEY:
-          return callback(null, {
-            statusCode: '302',
-            headers: {
-              'Cache-Control': 'max-age=604800',
-              'Location': `${CLOUDFRONT_URL}/notfound.html`,
-            },
-            body: '',
-          });
+          return callback(null, notFoundResponse);
 
         default:
           return callback(err);
