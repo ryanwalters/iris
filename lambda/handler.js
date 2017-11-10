@@ -4,6 +4,10 @@ const AWS = require('aws-sdk');
 const sharp = require('sharp');
 const S3 = new AWS.S3({ signatureVersion: 'v4' });
 
+const AmazonError = {
+  NO_SUCH_KEY: 'NoSuchKey',
+};
+
 
 
 /**
@@ -149,5 +153,26 @@ module.exports.resizeImage = (event, context, callback) => {
         body: '',
       })
     )
-    .catch(err => callback(err));
+
+
+    // Wah wah...
+
+    .catch((err) => {
+      switch (err.code) {
+        // Redirect to the generic "Not Found" page if the original image doesn't exist in S3
+
+        case AmazonError.NO_SUCH_KEY:
+          return callback(null, {
+            statusCode: '302',
+            headers: {
+              'Cache-Control': 'max-age=604800',
+              'Location': `${CLOUDFRONT_URL}/notfound.html`,
+            },
+            body: '',
+          });
+
+        default:
+          return callback(err);
+      }
+    });
 };
