@@ -141,6 +141,7 @@ module.exports.resizeImage = (event, context, callback) => {
 
       return resizedImage
         .toFormat('jpg')
+        .jpeg({ quality: 60 })
         .toBuffer()
     })
 
