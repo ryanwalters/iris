@@ -2,7 +2,8 @@
 
 ### Description
 
-Media server and image resizing service
+CDN/Media Server infrastructure with the capability of resizing images on the fly. Built using the
+[Serverless Framework](https://serverless.com/).
 
 ### Requirements
 
@@ -27,12 +28,12 @@ and quickly. This will take several minutes. Don't worry if it seems to hang, pa
 
 Run `sls deploy -v`
 
-#### That's it!
+**That's it!**
 
 We now have all of our AWS infrastructure in place for our media server, and the first version of the Resize Image
 function deployed.
 
-##### Deploying changes to Lambda functions
+**Deploying changes to Lambda functions**
 
 The majority of deployments will be in maintaining the functions deployed to Lambda. Whenever changes are made to files
 inside of the `./lambda` directory, we will need to repackage and deploy the changes.
@@ -41,3 +42,10 @@ This can be done by running the following commands:
 
 1. `make dist`
 1. `sls deploy --package -v`
+
+### AWS Services Used
+
+- Amazon API Gateway
+- Amazon Cloudfront
+- Amazon S3
+- AWS Lambda 
