@@ -9,7 +9,7 @@ package: image
 	docker run --rm --volume ${PWD}/lambda:/build amazonlinux:nodejs npm install --production
 
 dist: package
-	zip -FS -q -r dist/iris.zip lambda
+	cd lambda && zip -FS -q -r ../dist/iris.zip *
 	serverless package
 
 clean:
