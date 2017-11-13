@@ -16,7 +16,7 @@ CDN/Media Server infrastructure with the capability of resizing images on the fl
 on your machine, otherwise the Serverless deploy commands will fail.
 
 
-### Usage
+### Setup
 
 **1. Build the Lambda function**
 
@@ -31,7 +31,7 @@ Run `make dist`
 The Serverless Framework was designed to provision your AWS Lambda Functions, Events and infrastructure Resources safely
 and quickly. This will take several minutes. Don't worry if it seems to hang, particularly during the Cloudfront setup.
 
-Run `sls deploy -v`
+Run `serverless deploy -v`
 
 **That's it!**
 
@@ -46,7 +46,7 @@ inside of the `./lambda` directory, we will need to repackage and deploy the cha
 This can be done by running the following commands:
 
 1. `make dist`
-1. `sls deploy --package -v`
+1. `serverless deploy --package -v`
 
 
 ### Serverless CLI Reference
@@ -58,13 +58,13 @@ https://serverless.com/framework/docs/providers/aws/cli-reference/
 
 **Deploy to production**
 
-`serverless deploy --stage production`
+`serverless deploy --stage production -v`
 
 For more, see [Serverless CLI documentation for `deploy`](https://serverless.com/framework/docs/providers/aws/cli-reference/deploy/)
 
 **Remove provisioned infrastructure**
 
-`serverless remove`
+`serverless remove -v`
 
 For more, see [Serverless CLI documentation for `remove`](https://serverless.com/framework/docs/providers/aws/cli-reference/remove/)
 
@@ -79,3 +79,7 @@ For more, see [Serverless CLI documentation for `remove`](https://serverless.com
 Coming soon:
 
 - AWS Certificate Manager w/ custom domain name
+
+**Notes**
+
+- The `-v` flag on the Serverless commands enables verbose mode, and isn't strictly necessary

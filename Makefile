@@ -10,7 +10,7 @@ package: image
 
 dist: package
 	cd lambda && zip -FS -q -r ../dist/iris.zip *
-	serverless package
+	serverless package -v
 
 clean:
 	rm -r lambda/node_modules
