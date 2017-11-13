@@ -5,11 +5,16 @@
 CDN/Media Server infrastructure with the capability of resizing images on the fly. Built using the
 [Serverless Framework](https://serverless.com/).
 
+
 ### Requirements
 
 - [Node](https://nodejs.org/en/)
 - [Serverless](https://serverless.com/)
 - [Docker](https://docs.docker.com/engine/installation/)
+
+**Important:** Be sure to set up proper [AWS credentials](https://serverless.com/framework/docs/providers/aws/guide/credentials/) 
+on your machine, otherwise the Serverless deploy commands will fail.
+
 
 ### Usage
 
@@ -43,9 +48,34 @@ This can be done by running the following commands:
 1. `make dist`
 1. `sls deploy --package -v`
 
+
+### Serverless CLI Reference
+
+https://serverless.com/framework/docs/providers/aws/cli-reference/
+
+
+### Quick Reference
+
+**Deploy to production**
+
+`serverless deploy --stage production`
+
+For more, see [Serverless CLI documentation for `deploy`](https://serverless.com/framework/docs/providers/aws/cli-reference/deploy/)
+
+**Remove provisioned infrastructure**
+
+`serverless remove`
+
+For more, see [Serverless CLI documentation for `remove`](https://serverless.com/framework/docs/providers/aws/cli-reference/remove/)
+
+
 ### AWS Services Used
 
 - Amazon API Gateway
 - Amazon Cloudfront
 - Amazon S3
 - AWS Lambda 
+
+Coming soon:
+
+- AWS Certificate Manager w/ custom domain name
