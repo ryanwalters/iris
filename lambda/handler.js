@@ -5,6 +5,7 @@ const sharp = require('sharp');
 const S3 = new AWS.S3({ signatureVersion: 'v4' });
 const BUCKET = process.env.BUCKET;
 const CLOUDFRONT_URL = process.env.CLOUDFRONT_URL;
+const ERROR_DOCUMENT = process.env.ERROR_DOCUMENT;
 
 const AmazonError = {
   NO_SUCH_KEY: 'NoSuchKey',
@@ -14,7 +15,7 @@ const notFoundResponse = {
   statusCode: '302',
   headers: {
     'Cache-Control': 'max-age=604800',
-    'Location': `${CLOUDFRONT_URL}/notfound.html`,
+    'Location': `${CLOUDFRONT_URL}/${ERROR_DOCUMENT}`,
   },
   body: '',
 };

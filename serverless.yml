@@ -22,6 +22,7 @@ provider:
     BUCKET: { "Ref": "MediaServer" }
     BUCKET_DOMAIN: { "Fn::Join": ["", [{ "Ref": "MediaServer" }, ".s3-website-${self:provider.region}.amazonaws.com"]]}
     CLOUDFRONT_URL: { "Fn::Join": ["", ["https://", { "Fn::GetAtt": ["MediaCDN", "DomainName"] }]]}
+    ERROR_DOCUMENT: 404.html
   iamRoleStatements:
     - Effect: "Allow"
       Action:
@@ -47,7 +48,7 @@ resources:
         AccessControl: PublicRead
         WebsiteConfiguration:
           IndexDocument: index.html
-          ErrorDocument: notfound.html
+          ErrorDocument: ${self:provider.environment.ERROR_DOCUMENT}
           RoutingRules:
             - RedirectRule:
                 HttpRedirectCode: 307
