@@ -6,6 +6,36 @@ CDN/Media Server infrastructure with the capability of resizing images on the fl
 [Serverless Framework](https://serverless.com/).
 
 
+### Usage
+
+There are essentially five different types of URLs you can build to create your dynamically sized images:
+
+| Type                 | URL                            |
+| -------------------- | ------------------------------ |
+| Original             | /path/to/image.jpg             |
+| Rectangle            | /300x250/path/to/image.jpg     |
+| Rectangle w/ command | /300x250@max/path/to/image.jpg |
+| Square               | /300/path/to/image.jpg         |
+| Square w/ command    | /300@max/path/to/image.jpg     |
+
+**Anatomy of the URL**
+
+`/{width}x{height}@{command}/{path_to_original_image}`
+
+**Valid commands**
+
+| Command | Description |   |
+| ------- | ----------- | - |
+| `max`   | Preserving aspect ratio, resize the image to be as large as possible while ensuring its dimensions are less than or equal to the `width` and `height` specified.    | [Sharp documentation on `max`](http://sharp.dimens.io/en/stable/api-resize/#max) |
+| `min`   | Preserving aspect ratio, resize the image to be as small as possible while ensuring its dimensions are greater than or equal to the `width` and `height` specified. | [Sharp documentation on `min`](http://sharp.dimens.io/en/stable/api-resize/#min) |
+
+**Limitations**
+
+- `width` must be less than or equal to 1920
+- `height` must be less than or equal to 1080
+- Decimals are not allowed in the `height` and `width`
+
+
 ### Requirements
 
 - [Node](https://nodejs.org/en/)
