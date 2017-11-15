@@ -35,6 +35,9 @@ function isValidCommand(command) {
 /**
  * The resize function to be deployed to Lambda
  *
+ * todo: ensure height and width are numbers
+ * todo: disallow decimals
+ *
  * @param {Object}    event
  * @param {Object}    context
  * @param {Function}  callback
@@ -42,8 +45,6 @@ function isValidCommand(command) {
  */
 
 module.exports.resizeImage = (event, context, callback) => {
-  console.log(JSON.stringify(event));
-
   const key = event.queryStringParameters.key;
   const rectangle = key.match(/(\d+)x(\d+)\/(.*)/);
   const rectangleWithCommand = key.match(/(\d+)x(\d+)@(.*)\/(.*)/);
@@ -116,6 +117,21 @@ module.exports.resizeImage = (event, context, callback) => {
 
   else {
     console.log('Invalid key:', key);
+
+    return callback(null, notFoundResponse);
+  }
+
+
+  // Disallow dimensions outside of 1920x1080
+
+  if (width > 1920) {
+    console.log('Dimensions too large:', width, height);
+
+    return callback(null, notFoundResponse);
+  }
+
+  if (height > 1080) {
+    console.log('Dimensions too large:', width, height);
 
     return callback(null, notFoundResponse);
   }
