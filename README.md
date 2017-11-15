@@ -61,7 +61,21 @@ Run `make dist`
 The Serverless Framework was designed to provision your AWS Lambda Functions, Events and infrastructure Resources safely
 and quickly. This will take several minutes. Don't worry if it seems to hang, particularly during the Cloudfront setup.
 
-Run `serverless deploy -v`
+Run `serverless deploy`
+
+*Note:* You can specify a stage while deploying by using the `--stage` flag. e.g. `serverless deploy --stage production`.
+Defaults to `dev` if no `--stage` is set.
+
+**3. Add IndexDocument and ErrorDocument to S3**
+
+Next, we need to manually upload `index.html`, `404.html`, and `favicon.ico` to our newly created S3 bucket:
+
+1. Go to the [S3 Console](https://s3.console.aws.amazon.com/s3/home)
+1. Open our `iris-{stage}-mediaserver-xxxxx` bucket
+1. In the upper left, click the "Upload" button
+1. Upload the files inside of the `./etc/s3-default-documents` directory. **Be sure to make these public!**
+
+Automating this process is on the road map.
 
 **That's it!**
 
@@ -76,7 +90,7 @@ inside of the `./lambda` directory, we will need to repackage and deploy the cha
 This can be done by running the following commands:
 
 1. `make dist`
-1. `serverless deploy --package -v`
+1. `serverless deploy --package`
 
 
 ### Serverless CLI Reference
@@ -88,13 +102,13 @@ https://serverless.com/framework/docs/providers/aws/cli-reference/
 
 **Deploy to production**
 
-`serverless deploy --stage production -v`
+`serverless deploy --stage production`
 
 For more, see [Serverless CLI documentation for `deploy`](https://serverless.com/framework/docs/providers/aws/cli-reference/deploy/)
 
 **Remove provisioned infrastructure**
 
-`serverless remove -v`
+`serverless remove`
 
 For more, see [Serverless CLI documentation for `remove`](https://serverless.com/framework/docs/providers/aws/cli-reference/remove/)
 
@@ -109,7 +123,3 @@ For more, see [Serverless CLI documentation for `remove`](https://serverless.com
 Coming soon:
 
 - AWS Certificate Manager w/ custom domain name
-
-**Notes**
-
-- The `-v` flag on the Serverless commands enables verbose mode, and isn't strictly necessary
