@@ -48,7 +48,7 @@ function isValidCommand(command) {
 module.exports.resizeImage = (event, context, callback) => {
   const key = event.queryStringParameters.key;
   const rectangle = key.match(/(\d+)x(\d+)\/(.*)/);
-  const rectangleWithCommand = key.match(/(\d+)x(\d+)@(.*)\/(.*)/);
+  const rectangleWithCommand = key.match(/(\d+)x(\d+)@(.*?)\/(.*)/);
 
   let height;
   let width;
