@@ -8,15 +8,13 @@ CDN/Media Server infrastructure with the capability of resizing images on the fl
 
 ### Usage
 
-There are essentially five different types of URLs you can build to create your dynamically sized images:
+There are three different types of URLs you can build to create your dynamically sized images:
 
 | Type                 | URL                            |
 | -------------------- | ------------------------------ |
 | Original             | /path/to/image.jpg             |
 | Rectangle            | /300x250/path/to/image.jpg     |
 | Rectangle w/ command | /300x250@max/path/to/image.jpg |
-| Square               | /300/path/to/image.jpg         |
-| Square w/ command    | /300@max/path/to/image.jpg     |
 
 **Anatomy of the URL**
 

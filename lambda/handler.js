@@ -49,8 +49,6 @@ module.exports.resizeImage = (event, context, callback) => {
   const key = event.queryStringParameters.key;
   const rectangle = key.match(/(\d+)x(\d+)\/(.*)/);
   const rectangleWithCommand = key.match(/(\d+)x(\d+)@(.*)\/(.*)/);
-  const square = key.match(/(\d+)\/(.*)/);
-  const squareWithCommand = key.match(/(\d+)@(.*)\/(.*)/);
 
   let height;
   let width;
@@ -74,34 +72,6 @@ module.exports.resizeImage = (event, context, callback) => {
     height = parseInt(rectangleWithCommand[2]);
     command = rectangleWithCommand[3];
     imagePath = rectangleWithCommand[4];
-
-
-    // Make sure command is valid...
-
-    if (!isValidCommand(command)) {
-      console.log('Invalid command:', command);
-
-      return callback(null, notFoundResponse);
-    }
-  }
-
-
-  // 100/path/to/image
-
-  else if (Array.isArray(square)) {
-    width = parseInt(square[1]);
-    height = width;
-    imagePath = square[2];
-  }
-
-
-  // 100@max/path/to/image
-
-  else if (Array.isArray(squareWithCommand)) {
-    width = parseInt(squareWithCommand[1]);
-    height = width;
-    command = squareWithCommand[2];
-    imagePath = squareWithCommand[3];
 
 
     // Make sure command is valid...
