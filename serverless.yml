@@ -23,6 +23,8 @@ provider:
     BUCKET_DOMAIN: { "Fn::Join": ["", [{ "Ref": "MediaServer" }, ".s3-website-${self:provider.region}.amazonaws.com"]]}
     CLOUDFRONT_URL: { "Fn::Join": ["", ["https://", { "Fn::GetAtt": ["MediaCDN", "DomainName"] }]]}
     ERROR_DOCUMENT: 404.html
+    CDN_CERT_ARN: { "Ref": "CDNCert" }
+
   iamRoleStatements:
     - Effect: "Allow"
       Action:
@@ -41,6 +43,13 @@ functions:
 
 resources:
   Resources:
+    CDNCert:
+      Type: AWS::CertificateManager::Certificate
+      Properties:
+        DomainName: amedia.britannica.com
+        DomainValidationOptions:
+          - DomainName: amedia.britannica.com
+            ValidationDomain: britannica.com
     MediaServer:
       Type: AWS::S3::Bucket
       DeletionPolicy: Retain
@@ -80,3 +89,8 @@ resources:
               QueryString: 'false'
             TargetOriginId: MediaServerS3Origin
             ViewerProtocolPolicy: redirect-to-https
+          Aliases:
+            - amedia.britannica.com
+          ViewerCertificate:
+            AcmCertificateArn: ${self:provider.environment.CDN_CERT_ARN}
+            SslSupportMethod: sni-only
