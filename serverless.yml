@@ -23,13 +23,14 @@ provider:
     BUCKET_DOMAIN: { "Fn::Join": ["", [{ "Ref": "MediaServer" }, ".s3-website-${self:provider.region}.amazonaws.com"]]}
     CLOUDFRONT_URL: { "Fn::Join": ["", ["https://", { "Fn::GetAtt": ["MediaCDN", "DomainName"] }]]}
     ERROR_DOCUMENT: 404.html
-    CDN_CERT_ARN: { "Ref": "CDNCert" }
+    #CERT_DOMAIN: *.example.com
+    #CERT_VALIDATION_DOMAIN: example.com
+    #CERT_ARN: { "Ref": "CDNCert" }
 
   iamRoleStatements:
     - Effect: "Allow"
       Action:
         - "s3:*"
-      #Resource: { "Fn::Join": ["", ["arn:aws:s3:::", { "Ref": "MediaServer" }]]}
       Resource: "*"
 
 package:
@@ -43,13 +44,13 @@ functions:
 
 resources:
   Resources:
-    CDNCert:
-      Type: AWS::CertificateManager::Certificate
-      Properties:
-        DomainName: amedia.britannica.com
-        DomainValidationOptions:
-          - DomainName: amedia.britannica.com
-            ValidationDomain: britannica.com
+    #CDNCert:
+    #  Type: AWS::CertificateManager::Certificate
+    #  Properties:
+    #    DomainName: ${self:provider.environment.CERT_DOMAIN}
+    #    DomainValidationOptions:
+    #      - DomainName: ${self:provider.environment.CERT_DOMAIN}
+    #        ValidationDomain: ${self:provider.environment.CERT_VALIDATION_DOMAIN}
     MediaServer:
       Type: AWS::S3::Bucket
       DeletionPolicy: Retain
@@ -79,18 +80,14 @@ resources:
                 OriginProtocolPolicy: http-only
           Enabled: 'true'
           DefaultCacheBehavior:
-#            AllowedMethods:
-#            - GET
-#            CachedMethods:
-#            - GET
             Compress: 'true'
             DefaultTTL: 0
             ForwardedValues:
               QueryString: 'false'
             TargetOriginId: MediaServerS3Origin
             ViewerProtocolPolicy: redirect-to-https
-          Aliases:
-            - amedia.britannica.com
-          ViewerCertificate:
-            AcmCertificateArn: ${self:provider.environment.CDN_CERT_ARN}
-            SslSupportMethod: sni-only
+          #Aliases:
+          #  - ${self:provider.environment.CERT_DOMAIN}
+          #ViewerCertificate:
+          #  AcmCertificateArn: ${self:provider.environment.CERT_ARN}
+          #  SslSupportMethod: sni-only
