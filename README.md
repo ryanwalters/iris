@@ -146,7 +146,3 @@ You should now be able to use your shiny new `cdn.example.com` domain!
 - Amazon Cloudfront
 - Amazon S3
 - AWS Lambda 
-
-Coming soon:
-
-- AWS Certificate Manager w/ custom domain name
